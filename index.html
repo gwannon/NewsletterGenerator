@@ -37,7 +37,7 @@
 		<select class="form-select" id="loadfile"></select>
 		<button id="load" class="btn btn-secondary btn-sm">Cargar</button>
 		<hr/>
-		<input id="sendemail" type='email' placeholder='Email separados por comas' class='form-control' value=''>
+		<input id="sendemail" type="email" placeholder="Email separados por comas" class="form-control" value="">
 		<button id="send" class="btn btn-secondary btn-sm">Enviar</button>
 	</div>
 	<style>
@@ -50,11 +50,9 @@
 			padding-right: 40px;
 			border: 1px solid transparent;
 		}
-
 		#form div:focus {
 			border: 1px solid red;
 		}
-
 		.lateral {
 			position: fixed;
 			top: 3%;
@@ -68,7 +66,6 @@
 			border-bottom-right-radius: 10px;
 			max-width: 200px;
 		}
-
 		#form div i {
 			display: block;
 			position: absolute;
@@ -77,11 +74,9 @@
 			font-size: 20px;
 			cursor: pointer;
 		}
-
 		.container .row {
 			min-height: 100vh;
 		}
-
 		#advise {
 			background-color: #cdcdcd;
 			position: absolute;
@@ -145,7 +140,6 @@
 			$("#advise").fadeIn().delay(2000).fadeOut();
 		}
 
-
 		$(function() {
 			$( "#form" ).sortable({
 				update: function() {
@@ -153,7 +147,7 @@
         }
 			});
 			loadSaves();
-		} );
+		});
 
 		$("#newitem").click(function(e) {
 			jQuery("#form").append("<div id='item-"+item+"' data-type='item' class='col-12 bg-success p-2 mb-2 pe-5' tabindex='-1'>"+
@@ -219,7 +213,6 @@
 
 		$("#send").click(function(e) {
 			if($("#sendemail").val() != '') {
-				console.log("ENVIAR EMAIL");
 				regeneratePreview('send');
 			}
 		});
@@ -240,7 +233,6 @@
 				regeneratePreview();
 			});
 		});
-
 	</script>
 	<div id="advise"></div>
 </body>
