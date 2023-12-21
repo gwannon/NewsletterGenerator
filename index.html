@@ -1,0 +1,247 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>GENERADOR: Boletín Entreprise Europe Network</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+	<link href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" rel="stylesheet">
+	<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js" integrity="sha256-eTyxS0rkjpLEo16uXTS0uVCS4815lc40K2iVpWDvdSY=" crossorigin="anonymous"></script>
+</head>
+<body>
+  <section>
+    <div class="container">
+      <div class="row">
+				<div class="col-6">
+					<div id="form" class="col-12"></div>
+				</div>
+				<div class="col-6">
+					<iframe src="" width="100%" height="100%"></iframe>
+				</div>
+			</div>
+		</div>
+  </section>
+	<div class="lateral">
+		<button id="newtitle" class="btn btn-info btn-sm">Título</button>
+		<button id="newitem" class="btn btn-success btn-sm">Noticia</button>
+		<button id="newseparator" class="btn btn-warning btn-sm">Separador</button>
+		<button id="newspaciator" class="btn btn-warning btn-sm">Espaciador</button>
+		<button id="newbutton" class="btn btn-secondary btn-sm">Botón</button>
+		<hr/>
+		<button id="generate" class="btn btn-primary btn-sm">Generar boletín</button>
+		<button id="save" class="btn btn-secondary btn-sm">Guardar</button>
+		<hr/>
+		<select class="form-select" id="loadfile"></select>
+		<button id="load" class="btn btn-secondary btn-sm">Cargar</button>
+		<hr/>
+		<input id="sendemail" type='email' placeholder='Email separados por comas' class='form-control' value=''>
+		<button id="send" class="btn btn-secondary btn-sm">Enviar</button>
+	</div>
+	<style>
+		#form {
+			overflow: auto;
+    	height: 100vh;
+		}
+		#form div {
+			position: relative;
+			padding-right: 40px;
+			border: 1px solid transparent;
+		}
+
+		#form div:focus {
+			border: 1px solid red;
+		}
+
+		.lateral {
+			position: fixed;
+			top: 3%;
+			left: 0px;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			padding: 10px;
+			background-color: #cecece;
+			border-top-right-radius: 10px;
+			border-bottom-right-radius: 10px;
+			max-width: 200px;
+		}
+
+		#form div i {
+			display: block;
+			position: absolute;
+			top: 6px;
+			right: 10px;
+			font-size: 20px;
+			cursor: pointer;
+		}
+
+		.container .row {
+			min-height: 100vh;
+		}
+
+		#advise {
+			background-color: #cdcdcd;
+			position: absolute;
+			top: 10%;
+			width: 200px;
+			min-height: 20px;
+			left: calc(50% - 50px);
+			padding: 20px;
+			display: none;
+			border: 1px solid #000;
+			text-align: center;
+		}
+	</style>
+	<script>
+		var item = 1;
+		var iframe = './temp.html';
+		regeneratePreview();
+		function loadSaves() {
+			var date = new Date().toJSON();
+			$("#loadfile option").remove(); 
+			$.getJSON( "./saves/?hash="+date, function( data ) {
+				$.each( data, function( key, val ) {
+					$("#loadfile").append('<option value="'+val+'">'+val.replace("save-", "").replace(".json", "").replace("_", " ")+'</option>');
+				});
+			});
+		}
+
+		function regeneratePreview(action = 'generate') {
+			var form = [];
+			$("#form div").each(function() {
+				var values = []
+				$(this).children("input, textarea, select").each(function() {
+					values.push($(this).val());
+				});
+				form.push({
+					'type': $(this).data("type"),
+					'value': values
+				});
+			});
+
+			$.post({
+				url: "./ajax.php",
+				data: {
+					action: action,
+					form: form,
+					email: (action == 'send' ? $("#sendemail").val() : "")
+				}
+			}).done(function(data) {
+				if(action == 'save') loadSaves();
+				var date = new Date().toJSON();
+				$('iframe').attr( 'src', function () { return iframe+"?hash="+date; });
+				console.log(data);
+				if(data.status) showAdvise(data);
+			});
+		}
+
+		function showAdvise(json) {
+			$("#advise").html("");
+			$("#advise").addClass(" bg-"+json.status);
+			$("#advise").html(json.text);
+			$("#advise").fadeIn().delay(2000).fadeOut();
+		}
+
+
+		$(function() {
+			$( "#form" ).sortable({
+				update: function() {
+					regeneratePreview();
+        }
+			});
+			loadSaves();
+		} );
+
+		$("#newitem").click(function(e) {
+			jQuery("#form").append("<div id='item-"+item+"' data-type='item' class='col-12 bg-success p-2 mb-2 pe-5' tabindex='-1'>"+
+				"<input type='text' placeholder='Título' class='form-control mb-1' value=''>"+
+				"<input type='text' placeholder='Subtítulo' class='form-control mb-1' value=''>"+
+				"<input type='url' placeholder='URL' class='form-control mb-1' value=''>"+
+				"<textarea placeholder='Descripción' class='form-control'></textarea>"+
+				"<select><option value='efefed'>Gris</option><option value='ffffff'>Blanco</option></select>"+
+				"<i>&#x2715;</i></div>");
+			item++;
+			regeneratePreview();
+		});
+		
+		$("#newseparator").click(function(e) {
+			$("#form").append("<div id='item-"+item+"' data-type='separator' class='col-12 bg-warning p-2 mb-2 pe-5' tabindex='-1'><hr><i>&#x2715;</i></div>");
+			item++;
+			regeneratePreview();
+		});
+
+		$("#newspaciator").click(function(e) {
+			$("#form").append("<div id='item-"+item+"' data-type='spaciator' class='col-12 bg-warning p-2 mb-2 pe-5' tabindex='-1'><select class='form-select'><option value='efefed'>Gris</option><option value='ffffff'>Blanco</option></select> <i>&#x2715;</i></div>");
+			item++;
+			regeneratePreview();
+		});
+		
+		$("#newbutton").click(function(e) {
+			$("#form").append("<div id='item-"+item+"' data-type='button' class='col-12 bg-secondary p-2 mb-2 pe-5' tabindex='-1'><select class='form-select'><option value='gris'>Gris</option><option value='azul'>Azul</option></select><input class='form-control' type='text' value='' placeholder='URL'> <i>&#x2715;</i></div>");
+			item++;
+			regeneratePreview();
+		});
+		
+		$("#newtitle").click(function(e) {
+			$("#form").append("<div id='item-"+item+"' data-type='title' class='col-12 bg-info p-2 mb-2 pe-5'>"+
+				"<b>TITULAR</b> "+
+				"<select class='form-select'>"+
+				"<option value='1'>OFERTAS Y DEMANDAS DE TECNOLOGÍA</option>"+
+				"<option value='2'>OFERTAS Y DEMANDAS DE COOPERACIÓN</option>"+
+				"<option value='3'>BÚSQUEDA DE SOCIOS I+D</option>"+
+				"<option value='4'>CONVOCATORIAS</option>"+
+				"<option value='5'>OPEN CALLS</option>"+
+				"<option value='6'>EUROPA TE ESCUCHA</option>"+
+				"<option value='7'>LEGISLACIÓN EUROPEA</option>"+
+				"<option value='8'>EVENTOS</option>"+
+				"</select>"+
+				"<i>&#x2715;</i>"+
+				"</div>");
+			item++;
+			regeneratePreview();
+		});
+
+		$(document).on('click', "i", function() {
+			jQuery(this).parent().remove();
+			regeneratePreview();
+		});
+
+		$(document).on('change', "#form input, #form select", function() {
+			regeneratePreview();
+		});
+
+		$("#generate, #save").click(function(e) {
+			regeneratePreview($(this).attr("id"));
+		});
+
+		$("#send").click(function(e) {
+			if($("#sendemail").val() != '') {
+				console.log("ENVIAR EMAIL");
+				regeneratePreview('send');
+			}
+		});
+
+		$("#load").click(function(e) {
+			item = 1;
+			$("#form").html('');
+			$.getJSON( "./saves/"+$("#loadfile").val(), function( data ) {
+				$.each( data, function( key, val ) {
+					$("#new"+val.type).click();
+					if(val.value) {
+						var $currentitem = item - 1;
+						$("#item-"+$currentitem+" input, #item-"+$currentitem+" select, #item-"+$currentitem+" textarea").each(function(index) {
+							$(this).val(val.value[index]);
+						});
+					}
+				});
+				regeneratePreview();
+			});
+		});
+
+	</script>
+	<div id="advise"></div>
+</body>
+</html>
