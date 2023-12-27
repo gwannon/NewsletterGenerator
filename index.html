@@ -32,6 +32,7 @@
 		<button id="newbutton" class="btn btn-secondary btn-sm">Botón</button>
 		<hr/>
 		<button id="generate" class="btn btn-primary btn-sm">Generar boletín</button>
+		<input id="namesave" type="text" class="form-control" value="" placeholder="Nombre para guardar" />
 		<button id="save" class="btn btn-secondary btn-sm">Guardar</button>
 		<hr/>
 		<select class="form-select" id="loadfile"></select>
@@ -99,7 +100,7 @@
 			$("#loadfile option").remove(); 
 			$.getJSON( "./saves/?hash="+date, function( data ) {
 				$.each( data, function( key, val ) {
-					$("#loadfile").append('<option value="'+val+'">'+val.replace("save-", "").replace(".json", "").replace("_", " ")+'</option>');
+					$("#loadfile").append('<option value="'+val+'">'+val.replace("-", " (").replace(".json", "").replace("_", " ")+')</option>');
 				});
 			});
 		}
@@ -122,7 +123,8 @@
 				data: {
 					action: action,
 					form: form,
-					email: (action == 'send' ? $("#sendemail").val() : "")
+					email: (action == 'send' ? $("#sendemail").val() : ""),
+					namesave: (action == 'save' ? $("#namesave").val() : ""),
 				}
 			}).done(function(data) {
 				if(action == 'save') loadSaves();

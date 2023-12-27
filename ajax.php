@@ -57,7 +57,7 @@ if(isset($_POST['action']) && ($_POST['action'] == 'generate' || $_POST['action'
     if(!isset($json['status'])) $json = ['status' => 'success', 'text' => 'Newsletter enviada correctamente.'];
   }
 } else if(isset($_POST['action']) && $_POST['action'] == 'save' && isset($_POST['form'])) {
-  file_put_contents("./saves/save-".date("Y-m-d_His").".json", json_encode($_POST['form']));
+  file_put_contents("./saves/".(isset($_POST['namesave']) && $_POST['namesave'] != '' ? $_POST['namesave'] : 'Guardado')."-".date("Y-m-d_His").".json", json_encode($_POST['form']));
   if(!isset($json['status'])) $json = ['status' => 'success', 'text' => 'Newsletter guardada correctamente.'];
 }
 echo json_encode($json);
