@@ -25,6 +25,7 @@
 		</div>
   </section>
 	<div class="lateral">
+		<button id="newfeaturedtitle" class="btn btn-info btn-sm">Titular destacado</button>
 		<button id="newtitle" class="btn btn-info btn-sm">Título</button>
 		<button id="newitem" class="btn btn-success btn-sm">Noticia</button>
 		<button id="newseparator" class="btn btn-warning btn-sm">Separador</button>
@@ -40,6 +41,8 @@
 		<hr/>
 		<input id="sendemail" type="email" placeholder="Email separados por comas" class="form-control" value="">
 		<button id="send" class="btn btn-secondary btn-sm">Enviar</button>
+		<hr/>
+		<button id="reviewsend" class="btn btn-secondary btn-sm">Enviar a revisión</button>
 	</div>
 	<style>
 		#form {
@@ -89,6 +92,8 @@
 			display: none;
 			border: 1px solid #000;
 			text-align: center;
+			text-align: center;
+    	word-break: break-word;
 		}
 	</style>
 	<script>
@@ -200,6 +205,16 @@
 			regeneratePreview();
 		});
 
+		$("#newfeaturedtitle").click(function(e) {
+			$("#form").append("<div id='item-"+item+"' data-type='featuredtitle' class='col-12 bg-info p-2 mb-2 pe-5'>"+
+				"<b>TITULAR DESTACADO</b> "+
+				"<input type='text' placeholder='Títular destacado' class='form-control mb-1' value=''>"+
+				"<i>&#x2715;</i>"+
+				"</div>");
+			item++;
+			regeneratePreview();
+		});
+
 		$(document).on('click', "i", function() {
 			jQuery(this).parent().remove();
 			regeneratePreview();
@@ -209,7 +224,7 @@
 			regeneratePreview();
 		});
 
-		$("#generate, #save").click(function(e) {
+		$("#generate, #save, #reviewsend").click(function(e) {
 			regeneratePreview($(this).attr("id"));
 		});
 

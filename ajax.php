@@ -3,7 +3,7 @@ ini_set("display_errors", 0);
 date_default_timezone_set('Europe/Madrid');
 header('Content-Type: application/json; charset=utf-8');
 $json = [];
-if(isset($_POST['action']) && ($_POST['action'] == 'generate' || $_POST['action'] == 'send')) {
+if(isset($_POST['action']) && ($_POST['action'] == 'generate' || $_POST['action'] == 'send' || $_POST['action'] == 'reviewsend')) {
   $html = file_get_contents("templates/main.html");
   $innerhtml = "";
   $currentcolor = "ffffff";
@@ -23,6 +23,9 @@ if(isset($_POST['action']) && ($_POST['action'] == 'generate' || $_POST['action'
         $innerhtml .= file_get_contents("templates/title-".$item['value'][0].".html");
         $currentcolor = "ffffff";
         $currenttitle = $item['value'][0];
+      } else if($item['type'] == 'featuredtitle') {
+        $temp = file_get_contents("templates/featuredtitle.html");
+        $innerhtml .= str_replace('[title]', $item['value'][0], $temp);
       } else if($item['type'] == 'item') {
         if($currenttitle == 8)  $temp = file_get_contents("templates/event.html");
         else $temp = file_get_contents("templates/item.html");
@@ -45,16 +48,19 @@ if(isset($_POST['action']) && ($_POST['action'] == 'generate' || $_POST['action'
   }
   $html = str_replace("[MAIN]", $innerhtml, $html);
   file_put_contents("temp.html", $html);
-  if($_POST['action'] == 'send') {
+  if($_POST['action'] == 'send' || $_POST['action'] == 'reviewsend') {
     $file = date("Y-m-d_H_i_s").".html";
     file_put_contents("./html/".$file, $html);
+    if($_POST['action'] == 'reviewsend') {
+      $_POST['email'] = "jorge@enutt.net,slopez@spri.eus,aanton@spri.eus,carlos.abrantes@innobask.com";
+    }
     foreach(explode(",", $_POST['email']) as $email) {
       $email = chop($email);
       if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        if(!mail($email, "https://pruebas.enuttisworking.com/NUEVO-BOLETIN-BEEN/html/".$file, $html, "Content-Type: text/html; charset=UTF-8\r\n")) $json = ['status' => 'danger', 'text' => 'NO se ha podido enviar la newsletter. Inténtelo más tarde.'];
+        if(!mail($email, "[TEST] Boletín EENBASQUE", $html."https://pruebas.enuttisworking.com/NUEVO-BOLETIN-BEEN/html/".$file, "Content-Type: text/html; charset=UTF-8\r\n")) $json = ['status' => 'danger', 'text' => 'NO se ha podido enviar la newsletter. Inténtelo más tarde.'];
       } else if(!isset($json['status'])) $json = ['status' => 'danger', 'text' => 'Email incorrecto "'.$email.'".'];
     }
-    if(!isset($json['status'])) $json = ['status' => 'success', 'text' => 'Newsletter enviada correctamente.'];
+    if(!isset($json['status'])) $json = ['status' => 'success', 'text' => 'Newsletter enviada correctamente a: '.$_POST['email']];
   }
 } else if(isset($_POST['action']) && $_POST['action'] == 'save' && isset($_POST['form'])) {
   file_put_contents("./saves/".(isset($_POST['namesave']) && $_POST['namesave'] != '' ? $_POST['namesave'] : 'Guardado')."-".date("Y-m-d_His").".json", json_encode($_POST['form']));
