@@ -19,6 +19,7 @@ if(isset($_POST['action']) && ($_POST['action'] == 'generate' || $_POST['action'
       } else if($item['type'] == 'spaciator') {
         $innerhtml .= file_get_contents("templates/spaciator.html");
         $innerhtml = str_replace('[color]', $item['value'][0], $innerhtml);
+        $innerhtml = str_replace('[size]', $item['value'][1], $innerhtml);
       } else if($item['type'] == 'title') {
         $innerhtml .= file_get_contents("templates/title-".$item['value'][0].".html");
         $currentcolor = "ffffff";
@@ -28,6 +29,7 @@ if(isset($_POST['action']) && ($_POST['action'] == 'generate' || $_POST['action'
         $innerhtml .= str_replace('[title]', $item['value'][0], $temp);
       } else if($item['type'] == 'item') {
         if($currenttitle == 8)  $temp = file_get_contents("templates/event.html");
+        if($item['value'][4] == 'featured')  $temp = file_get_contents("templates/featureditem.html");
         else $temp = file_get_contents("templates/item.html");
         $temp = str_replace('[title]', $item['value'][0], $temp);
         $temp = str_replace('[url]', $item['value'][2], $temp);
@@ -38,7 +40,7 @@ if(isset($_POST['action']) && ($_POST['action'] == 'generate' || $_POST['action'
           $temp = str_replace('[subtitle]', $item['value'][1], $temp);
         } else {
           $temp = str_replace('[has_subtitle]', "<!-- ", $temp);
-          $temp = str_replace('[/has_subtitle]', " --><br/><br/>", $temp);
+          $temp = str_replace('[/has_subtitle]', " -->", $temp);
         }
         $temp = str_replace('[color]', $item['value'][4], $temp);
         $currentcolor = $item['value'][4];

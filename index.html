@@ -158,11 +158,11 @@
 
 		$("#newitem").click(function(e) {
 			jQuery("#form").append("<div id='item-"+item+"' data-type='item' class='col-12 bg-success p-2 mb-2 pe-5' tabindex='-1'>"+
-				"<input type='text' placeholder='Título' class='form-control mb-1' value=''>"+
-				"<input type='text' placeholder='Subtítulo' class='form-control mb-1' value=''>"+
-				"<input type='url' placeholder='URL' class='form-control mb-1' value=''>"+
+				"<input type='text' placeholder='Título' class='form-control form-control-sm mb-1' value=''>"+
+				"<input type='text' placeholder='Subtítulo' class='form-control form-control-sm mb-1' value=''>"+
+				"<input type='url' placeholder='URL' class='form-control form-control-sm mb-1' value=''>"+
 				"<textarea placeholder='Descripción' class='form-control'></textarea>"+
-				"<select><option value='efefed'>Gris</option><option value='ffffff'>Blanco</option></select>"+
+				"<select class='form-select form-select-sm'><option value='efefed'>Gris</option><option value='ffffff'>Blanco</option><option value='featured'>Destacado</option></select>"+
 				"<i>&#x2715;</i></div>");
 			item++;
 			regeneratePreview();
@@ -175,13 +175,27 @@
 		});
 
 		$("#newspaciator").click(function(e) {
-			$("#form").append("<div id='item-"+item+"' data-type='spaciator' class='col-12 bg-warning p-2 mb-2 pe-5' tabindex='-1'><select class='form-select'><option value='efefed'>Gris</option><option value='ffffff'>Blanco</option></select> <i>&#x2715;</i></div>");
+			$("#form").append("<div id='item-"+item+"' data-type='spaciator' class='col-12 bg-warning p-2 mb-2 pe-5' tabindex='-1'>"+
+				"<select class='form-select form-select-sm'>"+
+				"<option value='efefed'>Gris</option>"+
+				"<option value='ffffff'>Blanco</option>"+
+				"</select>"+
+				"<select class='form-select form-select-sm'>"+
+				"<option value='20'>Pequeño</option>"+
+				"<option value='40'>Mediano</option>"+
+				"<option value='60'>Grande</option>"+
+				"</select> <i>&#x2715;</i></div>");
 			item++;
 			regeneratePreview();
 		});
 		
 		$("#newbutton").click(function(e) {
-			$("#form").append("<div id='item-"+item+"' data-type='button' class='col-12 bg-secondary p-2 mb-2 pe-5' tabindex='-1'><select class='form-select'><option value='gris'>Gris</option><option value='azul'>Azul</option></select><input class='form-control' type='text' value='' placeholder='URL'> <i>&#x2715;</i></div>");
+			$("#form").append("<div id='item-"+item+"' data-type='button' class='col-12 bg-secondary p-2 mb-2 pe-5' tabindex='-1'>"+
+				"<select class='form-select form-select-sm'>"+
+				"<option value='gris'>Gris</option>"+
+				"<option value='azul'>Azul</option>"+
+				"</select>"+
+				"<input class='form-control form-control-sm' type='text' value='' placeholder='URL'> <i>&#x2715;</i></div>");
 			item++;
 			regeneratePreview();
 		});
@@ -189,7 +203,7 @@
 		$("#newtitle").click(function(e) {
 			$("#form").append("<div id='item-"+item+"' data-type='title' class='col-12 bg-info p-2 mb-2 pe-5'>"+
 				"<b>TITULAR</b> "+
-				"<select class='form-select'>"+
+				"<select class='form-select form-select-sm'>"+
 				"<option value='1'>OFERTAS Y DEMANDAS DE TECNOLOGÍA</option>"+
 				"<option value='2'>OFERTAS Y DEMANDAS DE COOPERACIÓN</option>"+
 				"<option value='3'>BÚSQUEDA DE SOCIOS I+D</option>"+
@@ -208,7 +222,7 @@
 		$("#newfeaturedtitle").click(function(e) {
 			$("#form").append("<div id='item-"+item+"' data-type='featuredtitle' class='col-12 bg-info p-2 mb-2 pe-5'>"+
 				"<b>TITULAR DESTACADO</b> "+
-				"<input type='text' placeholder='Títular destacado' class='form-control mb-1' value=''>"+
+				"<input type='text' placeholder='Títular destacado' class='form-control form-control-sm mb-1' value=''>"+
 				"<i>&#x2715;</i>"+
 				"</div>");
 			item++;
