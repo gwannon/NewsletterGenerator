@@ -30,6 +30,7 @@
 		<button id="newitem" class="btn btn-success btn-sm">Noticia</button>
 		<button id="newseparator" class="btn btn-warning btn-sm">Separador</button>
 		<button id="newspaciator" class="btn btn-warning btn-sm">Espaciador</button>
+		<button id="newimage" class="btn btn-dark btn-sm">Imagen</button>
 		<button id="newbutton" class="btn btn-secondary btn-sm">Botón</button>
 		<hr/>
 		<button id="generate" class="btn btn-primary btn-sm">Generar boletín</button>
@@ -53,9 +54,6 @@
 			position: relative;
 			padding-right: 40px;
 			border: 1px solid transparent;
-		}
-		#form div:focus {
-			border: 1px solid red;
 		}
 		.lateral {
 			position: fixed;
@@ -95,10 +93,19 @@
 			text-align: center;
     	word-break: break-word;
 		}
+
+		#form > div {
+			border: 2px solid white;
+		}
+
+		#form > div.focus {
+			border: 2px solid red;
+		}
 	</style>
 	<script>
 		var item = 1;
 		var iframe = './temp.html';
+		var focusDiv;
 		regeneratePreview();
 		function loadSaves() {
 			var date = new Date().toJSON();
@@ -135,7 +142,6 @@
 				if(action == 'save') loadSaves();
 				var date = new Date().toJSON();
 				$('iframe').attr( 'src', function () { return iframe+"?hash="+date; });
-				console.log(data);
 				if(data.status) showAdvise(data);
 			});
 		}
@@ -156,26 +162,41 @@
 			loadSaves();
 		});
 
+		$(document).on('click', "#form > div", function() {
+			$("div").not(this).removeClass("focus");
+			$(this).addClass("focus");
+			focusDiv = this;
+		});
+
 		$("#newitem").click(function(e) {
-			jQuery("#form").append("<div id='item-"+item+"' data-type='item' class='col-12 bg-success p-2 mb-2 pe-5' tabindex='-1'>"+
+			$("div").not(this).removeClass("focus");
+			var append = "<div id='item-"+item+"' data-type='item' class='focus col-12 bg-success p-2 mb-2 pe-5' tabindex='0'>"+
 				"<input type='text' placeholder='Título' class='form-control form-control-sm mb-1' value=''>"+
 				"<input type='text' placeholder='Subtítulo' class='form-control form-control-sm mb-1' value=''>"+
 				"<input type='url' placeholder='URL' class='form-control form-control-sm mb-1' value=''>"+
 				"<textarea placeholder='Descripción' class='form-control'></textarea>"+
 				"<select class='form-select form-select-sm'><option value='efefed'>Gris</option><option value='ffffff'>Blanco</option><option value='featured'>Destacado</option></select>"+
-				"<i>&#x2715;</i></div>");
+				"<i>&#x2715;</i></div>";
+			if(jQuery(focusDiv).length) $(focusDiv).after(append);
+			else $("#form").append(append);
+			focusDiv = $("#item-"+item);
 			item++;
 			regeneratePreview();
 		});
 		
 		$("#newseparator").click(function(e) {
-			$("#form").append("<div id='item-"+item+"' data-type='separator' class='col-12 bg-warning p-2 mb-2 pe-5' tabindex='-1'><hr><i>&#x2715;</i></div>");
+			$("div").not(this).removeClass("focus");
+			var append = "<div id='item-"+item+"' data-type='separator' class='focus col-12 bg-warning p-2 mb-2 pe-5' tabindex='-1'><hr><i>&#x2715;</i></div>";
+			if(jQuery(focusDiv).length) $(focusDiv).after(append);
+			else $("#form").append(append);
+			focusDiv = $("#item-"+item);
 			item++;
 			regeneratePreview();
 		});
 
 		$("#newspaciator").click(function(e) {
-			$("#form").append("<div id='item-"+item+"' data-type='spaciator' class='col-12 bg-warning p-2 mb-2 pe-5' tabindex='-1'>"+
+			$("div").not(this).removeClass("focus");
+			var append = "<div id='item-"+item+"' data-type='spaciator' class='focus col-12 bg-warning p-2 mb-2 pe-5' tabindex='-1'>"+
 				"<select class='form-select form-select-sm'>"+
 				"<option value='efefed'>Gris</option>"+
 				"<option value='ffffff'>Blanco</option>"+
@@ -184,24 +205,43 @@
 				"<option value='20'>Pequeño</option>"+
 				"<option value='40'>Mediano</option>"+
 				"<option value='60'>Grande</option>"+
-				"</select> <i>&#x2715;</i></div>");
+				"</select> <i>&#x2715;</i></div>";
+			if(jQuery(focusDiv).length) $(focusDiv).after(append);
+			else $("#form").append(append);
+			focusDiv = $("#item-"+item);
+			item++;
+			regeneratePreview();
+		});
+
+		$("#newimage").click(function(e) {
+			$("div").not(this).removeClass("focus");
+			var append = "<div id='item-"+item+"' data-type='image' class='focus col-12 bg-dark p-2 mb-2 pe-5' tabindex='-1'>"+
+				"<input class='form-control form-control-sm' type='text' value='' placeholder='URL Imagen'> <i style='color: #fff;'>&#x2715;</i></div>";
+			if(jQuery(focusDiv).length) $(focusDiv).after(append);
+			else $("#form").append(append);
+			focusDiv = $("#item-"+item);
 			item++;
 			regeneratePreview();
 		});
 		
 		$("#newbutton").click(function(e) {
-			$("#form").append("<div id='item-"+item+"' data-type='button' class='col-12 bg-secondary p-2 mb-2 pe-5' tabindex='-1'>"+
+			$("div").not(this).removeClass("focus");
+			var append = "<div id='item-"+item+"' data-type='button' class='focus col-12 bg-secondary p-2 mb-2 pe-5' tabindex='-1'>"+
 				"<select class='form-select form-select-sm'>"+
 				"<option value='gris'>Gris</option>"+
 				"<option value='azul'>Azul</option>"+
 				"</select>"+
-				"<input class='form-control form-control-sm' type='text' value='' placeholder='URL'> <i>&#x2715;</i></div>");
+				"<input class='form-control form-control-sm' type='text' value='' placeholder='URL'> <i>&#x2715;</i></div>";
+			if(jQuery(focusDiv).length) $(focusDiv).after(append);
+			else $("#form").append(append);
+			focusDiv = $("#item-"+item);
 			item++;
 			regeneratePreview();
 		});
 		
 		$("#newtitle").click(function(e) {
-			$("#form").append("<div id='item-"+item+"' data-type='title' class='col-12 bg-info p-2 mb-2 pe-5'>"+
+			$("div").not(this).removeClass("focus");
+			var append = "<div id='item-"+item+"' data-type='title' class='focus col-12 bg-info p-2 mb-2 pe-5'>"+
 				"<b>TITULAR</b> "+
 				"<select class='form-select form-select-sm'>"+
 				"<option value='1'>OFERTAS Y DEMANDAS DE TECNOLOGÍA</option>"+
@@ -214,17 +254,24 @@
 				"<option value='8'>EVENTOS</option>"+
 				"</select>"+
 				"<i>&#x2715;</i>"+
-				"</div>");
+				"</div>";
+			if(jQuery(focusDiv).length) $(focusDiv).after(append);
+			else $("#form").append(append);
+			focusDiv = $("#item-"+item);
 			item++;
 			regeneratePreview();
 		});
 
 		$("#newfeaturedtitle").click(function(e) {
-			$("#form").append("<div id='item-"+item+"' data-type='featuredtitle' class='col-12 bg-info p-2 mb-2 pe-5'>"+
+			$("div").not(this).removeClass("focus");
+			var append = "<div id='item-"+item+"' data-type='featuredtitle' class='focus col-12 bg-info p-2 mb-2 pe-5'>"+
 				"<b>TITULAR DESTACADO</b> "+
 				"<input type='text' placeholder='Títular destacado' class='form-control form-control-sm mb-1' value=''>"+
 				"<i>&#x2715;</i>"+
-				"</div>");
+				"</div>";
+			if(jQuery(focusDiv).length) $(focusDiv).after(append);
+			else $("#form").append(append);
+			focusDiv = $("#item-"+item);
 			item++;
 			regeneratePreview();
 		});

@@ -16,6 +16,9 @@ if(isset($_POST['action']) && ($_POST['action'] == 'generate' || $_POST['action'
       } else if($item['type'] == 'button') {
         $innerhtml .= file_get_contents("templates/button-".$item['value'][0].".html");
         $innerhtml = str_replace('[url]', $item['value'][1], $innerhtml);
+      } else if($item['type'] == 'image') {
+        $innerhtml .= file_get_contents("templates/image.html");
+        $innerhtml = str_replace('[image]', $item['value'][0], $innerhtml);
       } else if($item['type'] == 'spaciator') {
         $innerhtml .= file_get_contents("templates/spaciator.html");
         $innerhtml = str_replace('[color]', $item['value'][0], $innerhtml);
